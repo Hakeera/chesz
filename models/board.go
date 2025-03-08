@@ -20,7 +20,7 @@ func NewBoard() Board {
     }
 
     // Configurar peões
-    for i := 0; i < 8; i++ {
+    for i := range 8 { 
         board[1][i] = &Piece{Type: "P", Color: colors[0]}
         board[6][i] = &Piece{Type: "P", Color: colors[1]}
     }
@@ -35,7 +35,7 @@ func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int) {
         return
     }
 
-    // Passar a peça corretamente para a validação do movimento
+    // Validação de Movimento 
     if !b.IsValidMove(piece, fromRow, fromCol, toRow, toCol) {
         fmt.Println("Movimento inválido!")
         return

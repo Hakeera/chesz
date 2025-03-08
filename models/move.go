@@ -2,7 +2,7 @@ package models
 
 import "fmt"
 
-// Alteração na função IsValidMove para aceitar a peça
+// Valida o movimento de cada peça de acordo com seu tipo e cor 
 func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
     if piece == nil {
         fmt.Println("Não há peça na posição de origem.")
@@ -17,7 +17,7 @@ func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bo
     case "R":
         return isValidRookMove(b, piece, fromRow, fromCol, toRow, toCol)
     case "N":
-        return isValidKnightMove(b, piece, fromRow, fromCol, toRow, toCol) // Movimentação do cavalo
+        return isValidKnightMove(b, piece, fromRow, fromCol, toRow, toCol) 
     default:
         fmt.Println("Regra de movimentação ainda não implementada para esta peça.")
         return false
