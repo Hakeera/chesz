@@ -18,6 +18,10 @@ func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bo
         return isValidRookMove(b, piece, fromRow, fromCol, toRow, toCol)
     case "N":
         return isValidKnightMove(b, piece, fromRow, fromCol, toRow, toCol) 
+    case "Q":
+	return isValidQueenMove(b, piece, fromRow, fromCol, toRow, toCol)
+    case "K":
+        return isValidKingMove(b, piece, fromRow, fromCol, toRow, toCol) // Adicionando o Rei
     default:
         fmt.Println("Regra de movimentação ainda não implementada para esta peça.")
         return false
@@ -92,6 +96,25 @@ func isValidRookMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int)
 
     return b.isPathClear(piece, fromRow, fromCol, toRow, toCol)
 }
+
+// Movimento da Dama 
+func isValidQueenMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
+    // Se mover como uma Torre ou como um Bispo, o movimento é válido
+    return isValidRookMove(b, piece, fromRow, fromCol, toRow, toCol) ||
+           isValidBishopMove(b, piece, fromRow, fromCol, toRow, toCol)
+}
+
+func isValidKingMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
+    rowDiff := abs(toRow - fromRow)
+    colDiff := abs(toCol - fromCol)
+
+    // O Rei só pode se mover uma casa em qualquer direção
+    if rowDiff <= 1 && colDiff <= 1 {
+        return b.isPathClear(piece, fromRow, fromCol, toRow, toCol)
+    }
+    return false
+}
+
 
 // Função auxiliar para obter o valor absoluto
 func abs(x int) int {

@@ -28,21 +28,66 @@ func NewBoard() Board {
     return board
 }
 
-func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int) {
-    piece := b[fromRow][fromCol] // Obter a peça da posição de origem
+func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int) bool {
+    piece := b[fromRow][fromCol]
     if piece == nil {
-        fmt.Println("Não há peça na posição de origem.")
-        return
+        return false // Não há peça na posição de origem
     }
 
-    // Validação de Movimento 
     if !b.IsValidMove(piece, fromRow, fromCol, toRow, toCol) {
-        fmt.Println("Movimento inválido!")
-        return
+        return false // Movimento inválido
     }
 
-    // Realizar a movimentação
+    // Simular o movimento
+    temp := b[toRow][toCol] // Salvar peça de destino, caso exista
     b[toRow][toCol] = piece
     b[fromRow][fromCol] = nil
-    fmt.Printf("Peça %s movida de (%d, %d) para (%d, %d)\n", piece.Type, fromRow, fromCol, toRow, toCol)
+
+    // Verificar se o próprio Rei ficou em xeque
+    if b.isKingInCheck(piece.Color) {
+        // Reverter o movimento, pois é ilegal
+        b[fromRow][fromCol] = piece
+        b[toRow][toCol] = temp
+	fmt.Println("Rei em Xeque!")
+        return false
+    }
+
+    return true // Movimento válido
 }
+
+func (b *Board) isSquareAttacked(row, col int, attackerColor string) bool {
+    for r := range 8 { 
+        for c := range 8 { 
+            piece := b[r][c]
+            if piece != nil && piece.Color == attackerColor {
+                if b.IsValidMove(piece, r, c, row, col) {
+                    return true // Se alguma peça adversária puder se mover para essa casa, ela está atacada
+                }
+            }
+        }
+    }
+    return false
+}
+
+func (b *Board) isKingInCheck(kingColor string) bool {
+    // Encontrar a posição do Rei
+    var kingRow, kingCol int
+    for r := range 8 { 
+        for c := range 8 { 
+            piece := b[r][c]
+            if piece != nil && piece.Type == "K" && piece.Color == kingColor {
+                kingRow, kingCol = r, c
+                break
+            }
+        }
+    }
+
+    // Verificar se o Rei está sendo atacado
+    opponentColor := "White"
+    if kingColor == "White" {
+        opponentColor = "Black"
+    }
+
+    return b.isSquareAttacked(kingRow, kingCol, opponentColor)
+}
+

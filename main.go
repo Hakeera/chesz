@@ -10,25 +10,21 @@ func main() {
     board := models.NewBoard()
     views.PrintBoard(board)
 
-    //fmt.Println("\nMovendo Peão...")
-    //board.MovePiece(1, 1, 2, 1) 
-    
+    fmt.Println("\nMovendo Peão Brancas")
+    board.MovePiece(1, 4, 3, 4)
 
-    fmt.Println("\nMovendo Cavalo...")
-    board.MovePiece(0, 1, 2, 2)
-    board.MovePiece(2, 2, 4, 1)
-    board.MovePiece(4, 1, 5, 3) 
-    fmt.Println("\nXeque!")
-    board.MovePiece(5, 3, 7, 4) //Mate!
+    fmt.Println("\nMovendo Peão Pretas")
+    board.MovePiece(6, 4, 5, 4)
 
-    //fmt.Println("\nMovendo bispo")
-    //board.MovePiece(0, 2, 2, 0)
+    fmt.Println("\nMovendo Dama Pretas")
+    board.MovePiece(7, 3, 4, 6)
+    board.MovePiece(4, 6, 3, 6)
 
 
-    //fmt.Println("\nMovendo bispo para captura")
-    //board.MovePiece(2, 0, 6, 4)
-
+    fmt.Println("\nMovendo Rei Brancas")
+    board.MovePiece(1, 5, 2, 5) 
+    board.MovePiece(0, 4, 1, 4)
+	
 
     views.PrintBoard(board)
-    fmt.Println("\nMate!!")
 }
