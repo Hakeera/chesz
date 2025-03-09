@@ -21,7 +21,7 @@ func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bo
     case "Q":
 	return isValidQueenMove(b, piece, fromRow, fromCol, toRow, toCol)
     case "K":
-        return isValidKingMove(b, piece, fromRow, fromCol, toRow, toCol) // Adicionando o Rei
+        return isValidKingMove(b, piece, fromRow, fromCol, toRow, toCol) 
     default:
         fmt.Println("Regra de movimentação ainda não implementada para esta peça.")
         return false
@@ -30,10 +30,10 @@ func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bo
 
 // Lógica de movimentação do peão
 func isValidPawnMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
-    direction := 1 // Direção para peças brancas (movem "para baixo" no índice da matriz)
+    direction := -1 // Direção para peças brancas (movem "para baixo" no índice da matriz)
 
     if piece.Color == "Black" {
-        direction = -1 // Peças pretas movem "para cima"
+        direction = 1 // Peças pretas movem "para baixo"
     }
 
     // Movimento de uma casa para frente
@@ -42,7 +42,7 @@ func isValidPawnMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int)
     }
 
     // Primeiro movimento: duas casas para frente
-    if (fromRow == 1 && piece.Color == "White" || fromRow == 6 && piece.Color == "Black") &&
+    if (fromRow == 6 && piece.Color == "White" || fromRow == 1 && piece.Color == "Black") &&
         toRow == fromRow+(2*direction) && fromCol == toCol &&
         b[toRow][toCol] == nil && b[fromRow+direction][toCol] == nil {
         return true
@@ -78,7 +78,6 @@ func isValidKnightMove(b *Board, piece *Piece,fromRow, fromCol, toRow, toCol int
 	        // Verificar captura: se a casa de destino tem uma peça da mesma cor, é inválido
         if b[toRow][toCol] != nil {
             if b[toRow][toCol].Color == piece.Color {
-		println("PEÇA DE MESMA COR")
                 return false // Não pode capturar peça da mesma cor
             }
         }

@@ -101,3 +101,39 @@ func (b *Board) isKingInCheck(kingColor string) bool {
     return b.isSquareAttacked(kingRow, kingCol, opponentColor)
 }
 
+func (b *Board) IsCheckmate(color string) bool {
+    if !b.isKingInCheck(color) {
+        return false // Se o rei não está em xeque, não é xeque-mate
+    }
+
+    for fromRow, row := range b {
+        for fromCol, piece := range row {
+            if piece != nil && piece.Color == color {
+                for toRow := 0; toRow < 8; toRow++ {
+                    for toCol := 0; toCol < 8; toCol++ {
+                        if b.IsValidMove(piece, fromRow, fromCol, toRow, toCol) {
+                            // Simula o movimento
+                            temp := b[toRow][toCol]
+                            b[toRow][toCol] = piece
+                            b[fromRow][fromCol] = nil
+
+                            // Verifica se ainda está em xeque
+                            stillInCheck := b.isKingInCheck(color)
+
+                            // Reverte o movimento
+                            b[fromRow][fromCol] = piece
+                            b[toRow][toCol] = temp
+
+                            if !stillInCheck {
+                                return false // Ainda há movimentos legais
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true // Não há movimentos válidos, então é xeque-mate
+}
+

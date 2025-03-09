@@ -27,23 +27,33 @@ func (g *Game) SwitchTurn() {
 	}
 }
 
+func (g *Game) Opponent() string {
+	if g.Turn == "White" {
+		return "Black"
+	}
+	return "White"
+}
+
 func (g *Game) Play() {
 	for !g.GameOver {
-		views.PrintBoard(g.GetPrintableBoard()) 
+		views.PrintBoard(g.GetPrintableBoard()) // Usa GetPrintableBoard()
 		fmt.Printf("\nTurno: %s\n", g.Turn)
+        
+		// Verifica xeque-mate ANTES do turno
+        if g.Board.IsCheckmate(g.Turn) {
+				fmt.Printf("\nXEQUE-MATE! %s venceu!\n", g.Opponent())
+				g.GameOver = true
+				return
+		}
 
 		fromRow, fromCol, toRow, toCol, err := views.GetMove()
+		
 		if err != nil {
 			fmt.Println("\nErro:", err)
 			continue
 		}
-			if g.Board.MovePiece(fromRow, fromCol, toRow, toCol, g.Turn) {
-			// Verifica se um rei foi capturado
-			if g.IsKingCaptured() {
-				g.GameOver = true
-				break
-			}
 
+		if g.Board.MovePiece(fromRow, fromCol, toRow, toCol, g.Turn) {
 			g.SwitchTurn()
 		} else {
 			views.PrintMessage("Movimento inválido! Tente novamente.")
@@ -86,40 +96,9 @@ func (g *Game) GetPrintableBoard() [][]string {
 	return printable
 }
 
-// Função para exibir o tabuleiro sem criar um ciclo de importação
+// Exibir o tabuleiro 
 func (g *Game) PrintGameState() {
 	views.PrintBoard(g.GetPrintableBoard()) // Chama print.go sem importar models!
 }
 
-//IsKingCaptured verifica se algum dos reis foi capturado.
-func (g *Game) IsKingCaptured() bool {
-	hasWhiteKing := false
-	hasBlackKing := false
-
-	// Percorre o tabuleiro em busca dos reis
-	for _, row := range g.Board {
-
-		for _, piece := range row {
-			if piece != nil {
-				if piece.Type == "K" && piece.Color == "White" {
-					hasWhiteKing = true
-				} else if piece.Type == "K" && piece.Color == "Black" {
-					hasBlackKing = true
-				}
-			}
-		}
-	}
-
-	// Se um dos reis foi capturado, o jogo deve terminar
-	if !hasWhiteKing {
-		fmt.Println("Rei Branco capturado! Pretas vencem!")
-		return true
-	}
-	if !hasBlackKing {
-		fmt.Println("Rei Preto capturado! Brancas vencem!")
-		return true
-	}
-
-	return false
-}
 
