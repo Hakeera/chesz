@@ -1,6 +1,8 @@
 package models
 
-import "fmt"
+import (
+	"chesz/views"
+)
 
 // Tipo para representar o tabuleiro de xadrez
 type Board [8][8]*Piece
@@ -11,7 +13,7 @@ func NewBoard() Board {
 
     // Definição das peças iniciais
     setup := []string{"R", "N", "B", "Q", "K", "B", "N", "R"}
-    colors := []string{"White", "Black"}
+    colors := []string{"Black", "White"}
 
     // Configurar torres, cavalos, bispos, rainha e rei
     for i, piece := range setup {
@@ -28,10 +30,18 @@ func NewBoard() Board {
     return board
 }
 
-func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int) bool {
+func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int, turn string) bool {
     piece := b[fromRow][fromCol]
+
     if piece == nil {
+        views.PrintMessage("Não há peça na posição de origem!")
         return false // Não há peça na posição de origem
+    }
+
+    // Verifica se a peça pertence ao jogador do turno atual
+    if (turn == "White" && piece.Color != "White") || (turn == "Black" && piece.Color != "Black") {
+        views.PrintMessage("Você só pode mover suas próprias peças!")
+        return false
     }
 
     if !b.IsValidMove(piece, fromRow, fromCol, toRow, toCol) {
@@ -48,7 +58,7 @@ func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int) bool {
         // Reverter o movimento, pois é ilegal
         b[fromRow][fromCol] = piece
         b[toRow][toCol] = temp
-	fmt.Println("Rei em Xeque!")
+        views.PrintMessage("Movimento inválido: Rei em Xeque!")
         return false
     }
 

@@ -1,28 +1,21 @@
 package views
 
-import (
-	"chesz/models"
-	"fmt"
-)
+import "fmt"
 
-// PrintBoard exibe o tabuleiro no terminal
-func PrintBoard(board *models.Board) {
+// PrintBoard recebe uma matriz genérica e exibe o tabuleiro
+func PrintBoard(board [][]string) {
 	fmt.Println("  a b c d e f g h")
-	for i, row := range *board {
+	for i, row := range board {
 		fmt.Printf("%d ", 8-i)
-		for _, piece := range row {
-			if piece == nil {
-				fmt.Print(". ")
-			} else {
-				fmt.Print(piece.Type, " ")
-			}
+		for _, cell := range row {
+			fmt.Print(cell + " ")
 		}
 		fmt.Printf("%d\n", 8-i)
 	}
 	fmt.Println("  a b c d e f g h")
 }
 
-// PrintMessage exibe mensagens para o jogador
+// PrintMessage exibe mensagens no terminal
 func PrintMessage(msg string) {
 	fmt.Println(msg)
 }
