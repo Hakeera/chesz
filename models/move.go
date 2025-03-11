@@ -103,6 +103,7 @@ func isValidQueenMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int
            isValidBishopMove(b, piece, fromRow, fromCol, toRow, toCol)
 }
 
+// Movimento do Rei
 func isValidKingMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
     rowDiff := abs(toRow - fromRow)
     colDiff := abs(toCol - fromCol)
@@ -113,7 +114,6 @@ func isValidKingMove(b *Board, piece *Piece, fromRow, fromCol, toRow, toCol int)
     }
     return false
 }
-
 
 // Função auxiliar para obter o valor absoluto
 func abs(x int) int {
