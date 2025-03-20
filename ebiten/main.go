@@ -14,7 +14,9 @@ const (
         tileSize     = screenWidth / 8
 )
 
-type Game struct{}
+type Game struct{
+	AmazImg *ebiten.Image
+}
 
 func (g *Game) Update() error {
         return nil
@@ -37,6 +39,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
                 }
         }
         ebitenutil.DebugPrint(screen, "cheizin")
+	screen.DrawImage(
+		g.AmazImg,
+		&ebiten.DrawImageOptions{},
+	)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -46,7 +52,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func main() {
         ebiten.SetWindowSize(screenWidth, screenHeight)
         ebiten.SetWindowTitle("CHEISZ")
-        if err := ebiten.RunGame(&Game{}); err != nil {
+		amazImg, _, err := ebitenutil.NewImageFromFile("media/black-amazon.png")
+	if err != nil {
+	// Handel error
+	log.Fatal(err)
+		}
+		
+		if err := ebiten.RunGame(&Game{AmazImg: amazImg}); err != nil {
                 log.Fatal(err)
         }
 }
