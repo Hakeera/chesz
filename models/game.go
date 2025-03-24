@@ -79,7 +79,6 @@ func PrintMessage(msg string) {
 	fmt.Println(msg)
 }
 
-
 // Convert Board to [][]string
 func (g *Game) GetPrintableBoard() [][]string {
 	printable := make([][]string, 8)
