@@ -10,5 +10,5 @@ import (
 func SetUpRoutes (e *echo.Echo) {
 	e.GET("/", controller.HomeHandler)  
 	e.GET("/start", controller.StartGame)  
-	e.GET("/move", controller.StartGame)  
+	e.POST("/move", controller.MovePiece)  
 }

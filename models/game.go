@@ -37,6 +37,7 @@ func (g *Game) Opponent() string {
 func (g *Game) Play() {
 	for !g.GameOver {
 		views.PrintBoard(g.GetPrintableBoard()) // Usa GetPrintableBoard()
+
 		fmt.Printf("\nTurno: %s\n", g.Turn)
 
 		// Verifica xeque-mate ANTES do turno
