@@ -2,7 +2,7 @@ package models
 
 import "fmt"
 
-// Valida o movimento de cada peça de acordo com seu tipo e cor 
+// IsValidMove Valida o movimento de cada peça de acordo com seu tipo e cor 
 func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
     if piece == nil {
         fmt.Println("Não há peça na posição de origem.")

@@ -1,6 +1,8 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // PrintBoard recebe uma matriz genérica e exibe o tabuleiro
 func PrintBoard(board [][]string) {

@@ -1,13 +1,10 @@
 package models
 
-import (
-	"chesz/views"
-)
+import "chesz/views"
 
-// Tipo para representar o tabuleiro de xadrez
 type Board [8][8]*Piece
 
-// Função para inicializar o tabuleiro com as peças na posição inicial
+// NewBoard inicializar o tabuleiro com as peças na posição inicial
 func NewBoard() Board {
     var board Board
 

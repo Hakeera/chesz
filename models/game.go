@@ -38,16 +38,16 @@ func (g *Game) Play() {
 	for !g.GameOver {
 		views.PrintBoard(g.GetPrintableBoard()) // Usa GetPrintableBoard()
 		fmt.Printf("\nTurno: %s\n", g.Turn)
-        
+
 		// Verifica xeque-mate ANTES do turno
-        if g.Board.IsCheckmate(g.Turn) {
-				fmt.Printf("\nXEQUE-MATE! %s venceu!\n", g.Opponent())
-				g.GameOver = true
-				return
+		if g.Board.IsCheckmate(g.Turn) {
+			fmt.Printf("\nXEQUE-MATE! %s venceu!\n", g.Opponent())
+			g.GameOver = true
+			return
 		}
 
 		fromRow, fromCol, toRow, toCol, err := views.GetMove()
-		
+
 		if err != nil {
 			fmt.Println("\nErro:", err)
 			continue
@@ -61,25 +61,7 @@ func (g *Game) Play() {
 	}
 }
 
-// PrintBoard recebe uma matriz genérica e exibe o tabuleiro
-func PrintBoard(board [][]string) {
-	fmt.Println("  a b c d e f g h")
-	for i, row := range board {
-		fmt.Printf("%d ", 8-i)
-		for _, cell := range row {
-			fmt.Print(cell + " ")
-		}
-		fmt.Printf("%d\n", 8-i)
-	}
-	fmt.Println("  a b c d e f g h")
-}
-
-// PrintMessage exibe mensagens no terminal
-func PrintMessage(msg string) {
-	fmt.Println(msg)
-}
-
-// Convert Board to [][]string
+// GetPrintableBoard convert Board to [][]string
 func (g *Game) GetPrintableBoard() [][]string {
 	printable := make([][]string, 8)
 	for i := range printable {
@@ -94,10 +76,3 @@ func (g *Game) GetPrintableBoard() [][]string {
 	}
 	return printable
 }
-
-// Exibir o tabuleiro 
-func (g *Game) PrintGameState() {
-	views.PrintBoard(g.GetPrintableBoard()) // Chama print.go sem importar models!
-}
-
-
