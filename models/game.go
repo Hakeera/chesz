@@ -1,7 +1,6 @@
 package models
 
 import (
-	"chesz/views"
 	"fmt"
 )
 
@@ -9,13 +8,36 @@ type Game struct {
 	Board    Board
 	Turn     string // "White" ou "Black"
 	GameOver bool
+	MoveChan  chan MoveCommand
 }
+
+type MoveCommand struct {
+	FromRow, FromCol, ToRow, ToCol int
+	ReplyCh chan MoveResult
+}
+
+type MoveRequest struct {
+	FromRow int
+	FromCol int
+	ToRow   int
+	ToCol   int
+	ReplyCh chan MoveResult
+}
+
+type MoveResult struct {
+	Success   bool
+	GameOver  bool
+	Message   string
+}
+
+var CurrentGame *Game
 
 func NewGame() *Game {
 	return &Game{
 		Board:    NewBoard(),
 		Turn:     "White",
 		GameOver: false,
+		MoveChan: make(chan MoveCommand), // Cria o Chanel do jogo
 	}
 }
 
@@ -34,30 +56,31 @@ func (g *Game) Opponent() string {
 	return "White"
 }
 
-func (g *Game) Play() {
+func (g *Game) PlayLoop() {
+	// Channel to recive requisitions from client
 	for !g.GameOver {
-		views.PrintBoard(g.GetPrintableBoard()) // Usa GetPrintableBoard()
+		move := <-g.MoveChan
 
-		fmt.Printf("\nTurno: %s\n", g.Turn)
-
-		// Verifica xeque-mate ANTES do turno
+		// Verifica xeque-mate antes do movimento
 		if g.Board.IsCheckmate(g.Turn) {
-			fmt.Printf("\nXEQUE-MATE! %s venceu!\n", g.Opponent())
 			g.GameOver = true
-			return
-		}
-
-		fromRow, fromCol, toRow, toCol, err := views.GetMove()
-
-		if err != nil {
-			fmt.Println("\nErro:", err)
+			move.ReplyCh <- MoveResult{
+				Success:  false,
+				GameOver: true,
+				Message:  fmt.Sprintf("Xeque-mate! %s venceu.", g.Opponent()),
+			}
 			continue
 		}
 
-		if g.Board.MovePiece(fromRow, fromCol, toRow, toCol, g.Turn) {
+		ok, _ := g.Board.MovePiece(move.FromRow, move.FromCol, move.ToRow, move.ToCol, g.Turn)
+		if ok { 
 			g.SwitchTurn()
+			move.ReplyCh <- MoveResult{Success: true}
 		} else {
-			views.PrintMessage("Movimento inválido! Tente novamente.")
+			move.ReplyCh <- MoveResult{
+				Success: false,
+				Message: "Movimento inválido",
+			}
 		}
 	}
 }

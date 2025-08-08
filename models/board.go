@@ -27,22 +27,23 @@ func NewBoard() Board {
     return board
 }
 
-func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int, turn string) bool {
+func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int, turn string) (bool, string) {
     piece := b[fromRow][fromCol]
 
     if piece == nil {
         views.PrintMessage("Não há peça na posição de origem!")
-        return false // Não há peça na posição de origem
+        return false ,"Não há peça na posição de origem"
     }
 
     // Verifica se a peça pertence ao jogador do turno atual
     if (turn == "White" && piece.Color != "White") || (turn == "Black" && piece.Color != "Black") {
         views.PrintMessage("Você só pode mover suas próprias peças!")
-        return false
+        return false, "Você só pode mover suas próprias peças!"
     }
 
+    // Verifica se o Movimento é legal
     if !b.IsValidMove(piece, fromRow, fromCol, toRow, toCol) {
-        return false // Movimento inválido
+        return false, "Movimento inválido"
     }
 
     // Simular o movimento
@@ -56,10 +57,10 @@ func (b *Board) MovePiece(fromRow, fromCol, toRow, toCol int, turn string) bool 
         b[fromRow][fromCol] = piece
         b[toRow][toCol] = temp
         views.PrintMessage("Movimento inválido: Rei em Xeque!")
-        return false
+        return false, "Movimento inválido: Rei em Xeque!"
     }
 
-    return true // Movimento válido
+    return true, ""
 }
 
 func (b *Board) isSquareAttacked(row, col int, attackerColor string) bool {

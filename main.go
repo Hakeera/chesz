@@ -1,10 +1,12 @@
 package main
 
 import (
-	"chesz/routes"
 	"html/template"
 	"io"
 	"log"
+
+	"chesz/models"
+	"chesz/routes"
 
 	"github.com/labstack/echo/v4"
 )
@@ -24,7 +26,6 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data any, c echo.Con
 }
 
 func main() {
-
 	// Compila todos os templates HTML e adiciona funções auxiliares
 	renderer := &TemplateRenderer{
 		templates: template.Must(template.New("").Funcs(template.FuncMap{
@@ -42,6 +43,10 @@ func main() {
 
 	// Define o renderer customizado
 	e.Renderer = renderer
+
+	// Inicia o Jogo
+	models.CurrentGame = models.NewGame()
+	go models.CurrentGame.PlayLoop()
 
 	// Define rotas
 	routes.SetUpRoutes(e)

@@ -3,28 +3,91 @@ package controller
 
 import (
 	"chesz/models"
+	"fmt"
+	"log"
 	"net/http"
+	"unicode"
 
 	"github.com/labstack/echo/v4"
 )
 
+var CurrentGame *models.Game
+
 // HomeHandler GET /
 func HomeHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "base", "AQUI")
+	return c.Render(http.StatusOK, "base", nil)
 }
 
 // StartGame GET /start
 func StartGame(c echo.Context) error {
 	game := models.NewGame()
+	game.MoveChan = make(chan models.MoveCommand) // Creates Channel
+	CurrentGame = game
 
-	// Aqui renderiza o tabuleiro usando GetPrintableBoard
+	go game.PlayLoop()
+
 	return c.Render(http.StatusOK, "base", map[string]any{
 		"board": game.GetPrintableBoard(),
 	})
 }
 
-// MovePiece POST /move
-func MovePiece(c echo.Context) error {
-	// Em breve: lógica para movimentar peças
-	return c.String(http.StatusOK, "Movimento ainda não implementado.")
+// ClientMove POST /move
+func ClientMove(c echo.Context) error {
+	log.Println("ClientMove called")
+
+	from := c.FormValue("from")
+	to := c.FormValue("to")
+	log.Printf("Received move: from=%s, to=%s\n", from, to)
+
+	fromRow, fromCol, err := parsePosition(from)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Posição de origem inválida")
+	}
+
+	toRow, toCol, err := parsePosition(to)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Posição de destino inválida")
+	}
+
+	// Cria canal de resposta e envia a jogada
+	moveCh := make(chan models.MoveResult)
+
+	// Aqui pode ser o ponto do erro!
+	if models.CurrentGame == nil {
+		log.Println("ERRO: CurrentGame está nil!")
+		return c.String(http.StatusInternalServerError, "Jogo não inicializado")
+	}
+
+	models.CurrentGame.MoveChan <- models.MoveCommand{
+		FromRow: fromRow,
+		FromCol: fromCol,
+		ToRow:   toRow,
+		ToCol:   toCol,
+		ReplyCh: moveCh,
+	}
+
+	result := <-moveCh
+
+	return c.Render(http.StatusOK, "base", map[string]any{
+		"board": models.CurrentGame.GetPrintableBoard(),
+		"msg":   result.Message,
+	})
+}
+
+func parsePosition(pos string) (int, int, error) {
+	if len(pos) != 2 {
+		return 0, 0, fmt.Errorf("posição inválida")
+	}
+
+	colRune := unicode.ToLower(rune(pos[0]))
+	rowRune := rune(pos[1])
+
+	col := int(colRune - 'a') // a=0, b=1, ..., h=7
+	row := 8 - int(rowRune-'0') // 8->0, 1->7
+
+	if row < 0 || row > 7 || col < 0 || col > 7 {
+		return 0, 0, fmt.Errorf("posição fora do tabuleiro")
+	}
+
+	return row, col, nil
 }

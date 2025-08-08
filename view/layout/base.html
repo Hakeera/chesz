@@ -14,10 +14,15 @@
 
     <main>
         {{block "content" .}}{{end}}
+
+	<form action="/move" method="POST">
+		De: <input name="from" type="text" placeholder="ex: e2" required>
+		Para: <input name="to" type="text" placeholder="ex: e4" required>
+		<button type="submit">Mover</button>
+	</form>
     </main>
 
     <footer>
-        <p>© 2025 - Leonardo Petrilli</p>
     </footer>
 </body>
 </html>
