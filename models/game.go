@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Game struct {
@@ -57,7 +58,7 @@ func (g *Game) Opponent() string {
 }
 
 func (g *Game) PlayLoop() {
-	// Channel to recive requisitions from client
+	//Creates Channel to recive requisitions from client
 	for !g.GameOver {
 		move := <-g.MoveChan
 
@@ -86,6 +87,7 @@ func (g *Game) PlayLoop() {
 }
 
 // GetPrintableBoard convert Board to [][]string
+// Peças brancas em MAIÚSCULAS, peças pretas em minúsculas
 func (g *Game) GetPrintableBoard() [][]string {
 	printable := make([][]string, 8)
 	for i := range printable {
@@ -94,9 +96,17 @@ func (g *Game) GetPrintableBoard() [][]string {
 			if g.Board[i][j] == nil {
 				printable[i][j] = "." // Casa vazia
 			} else {
-				printable[i][j] = g.Board[i][j].Type // Exibir tipo da peça
+				piece := g.Board[i][j]
+				if piece.Color == "white" || piece.Color == "White" || piece.Color == "WHITE" {
+					// Peças brancas em MAIÚSCULAS
+					printable[i][j] = strings.ToUpper(piece.Type)
+				} else {
+					// Peças pretas em minúsculas
+					printable[i][j] = strings.ToLower(piece.Type)
+				}
 			}
 		}
 	}
 	return printable
 }
+

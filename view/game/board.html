@@ -1,9 +1,17 @@
 {{define "content"}}
-<pre>
+<div>
+	<p>Turno:{{.turn}}</p>
+</div>
+<pre class="chess-board">
   a b c d e f g h
 {{range $i, $row := .board}}
 {{sub 8 $i}} {{range $row}}{{.}} {{end}} {{sub 8 $i}}
 {{end}}
   a b c d e f g h
 </pre>
+<div>
+	{{if .msg}}
+	<p>{{.msg}}</p>
+	{{end}}
+</div>
 {{end}}

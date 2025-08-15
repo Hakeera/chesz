@@ -1,0 +1,196 @@
+/* Estilo do container do tabuleiro */
+pre {
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    line-height: 1;
+    background: #f0d9b5;
+    padding: 20px;
+    border: 4px solid #8b4513;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    margin: 20px auto;
+    width: fit-content;
+    white-space: pre;
+}
+
+/* Estilização das linhas do tabuleiro */
+pre {
+    background: linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 2ch,
+        #f0d9b5 2ch,
+        #f0d9b5 3ch,
+        transparent 3ch,
+        transparent 4ch,
+        #b58863 4ch,
+        #b58863 5ch,
+        #f0d9b5 5ch,
+        #f0d9b5 6ch,
+        #b58863 6ch,
+        #b58863 7ch,
+        #f0d9b5 7ch,
+        #f0d9b5 8ch,
+        #b58863 8ch,
+        #b58863 9ch,
+        #f0d9b5 9ch,
+        #f0d9b5 10ch,
+        #b58863 10ch,
+        #b58863 11ch,
+        #f0d9b5 11ch,
+        #f0d9b5 12ch,
+        #b58863 12ch,
+        #b58863 13ch,
+        #f0d9b5 13ch,
+        #f0d9b5 14ch,
+        #b58863 14ch,
+        #b58863 15ch,
+        #f0d9b5 15ch,
+        #f0d9b5 16ch,
+        #b58863 16ch,
+        #b58863 17ch,
+        #f0d9b5 17ch,
+        #f0d9b5 18ch,
+        transparent 18ch
+    );
+    background-size: 100% 1em;
+}
+
+/* Alternância de cores nas linhas */
+pre :nth-child(even) {
+    background: linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 2ch,
+        #b58863 2ch,
+        #b58863 3ch,
+        #f0d9b5 3ch,
+        #f0d9b5 4ch,
+        #b58863 4ch,
+        #b58863 5ch,
+        #f0d9b5 5ch,
+        #f0d9b5 6ch,
+        #b58863 6ch,
+        #b58863 7ch,
+        #f0d9b5 7ch,
+        #f0d9b5 8ch,
+        #b58863 8ch,
+        #b58863 9ch,
+        #f0d9b5 9ch,
+        #f0d9b5 10ch,
+        #b58863 10ch,
+        #b58863 11ch,
+        #f0d9b5 11ch,
+        #f0d9b5 12ch,
+        #b58863 12ch,
+        #b58863 13ch,
+        #f0d9b5 13ch,
+        #f0d9b5 14ch,
+        #b58863 14ch,
+        #b58863 15ch,
+        #f0d9b5 15ch,
+        #f0d9b5 16ch,
+        #b58863 16ch,
+        #b58863 17ch,
+        transparent 17ch
+    );
+}
+
+/* Abordagem alternativa mais simples usando pseudo-elementos */
+.chess-board {
+    position: relative;
+    font-family: 'Courier New', monospace;
+    font-size: 28px;
+    line-height: 1.2;
+    background: #f0d9b5;
+    padding: 30px;
+    border: 6px solid #8b4513;
+    border-radius: 12px;
+    box-shadow: 
+        0 0 0 2px #d2691e,
+        0 8px 16px rgba(0,0,0,0.4);
+    margin: 20px auto;
+    width: fit-content;
+    white-space: pre;
+}
+
+/* Grid para criar o padrão xadrez */
+.chess-board::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1.2em,
+            rgba(181, 136, 99, 0.3) 1.2em,
+            rgba(181, 136, 99, 0.3) 2.4em
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2ch,
+            rgba(181, 136, 99, 0.3) 2ch,
+            rgba(181, 136, 99, 0.3) 4ch
+        );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Estilo das peças de xadrez usando símbolos Unicode */
+.chess-board {
+    color: #2c1810;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+    font-weight: bold;
+}
+
+/* Coordenadas do tabuleiro */
+.chess-board {
+    color: #654321;
+    font-weight: 600;
+}
+
+/* Hover effect para interatividade */
+.chess-board:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 0 0 2px #d2691e,
+        0 12px 20px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
+}
+
+/* Versão simplificada usando apenas background */
+.simple-chess-board {
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    line-height: 1.1;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            #f0d9b5 0px,
+            #f0d9b5 20px,
+            #b58863 20px,
+            #b58863 40px
+        );
+    padding: 25px;
+    border: 4px solid #8b4513;
+    border-radius: 8px;
+    color: #2c1810;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.3);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    margin: 20px auto;
+    width: fit-content;
+}
+
+/* Estilo responsivo */
+@media (max-width: 768px) {
+    pre, .chess-board, .simple-chess-board {
+        font-size: 18px;
+        padding: 15px;
+    }
+}

@@ -25,5 +25,24 @@
     <footer>
     </footer>
 </body>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const board = document.querySelector('.chess-board');
+		if (board) {
+			let content = board.textContent;
+
+			const pieces = {
+				'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙', // Brancas
+				'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'  // Pretas
+			};
+
+			for (const [letter, symbol] of Object.entries(pieces)) {
+				content = content.replaceAll(letter, symbol);
+			}
+
+			board.textContent = content;
+		}
+	});
+</script>
 </html>
 {{end}}

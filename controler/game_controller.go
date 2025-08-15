@@ -15,10 +15,10 @@ var CurrentGame *models.Game
 
 // HomeHandler GET /
 func HomeHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "base", nil)
+	return c.Render(http.StatusOK, "home", nil)
 }
 
-// StartGame GET /start
+// StartGame GET /play
 func StartGame(c echo.Context) error {
 	game := models.NewGame()
 	game.MoveChan = make(chan models.MoveCommand) // Creates Channel
@@ -33,28 +33,32 @@ func StartGame(c echo.Context) error {
 
 // ClientMove POST /move
 func ClientMove(c echo.Context) error {
-	log.Println("ClientMove called")
 
+	// Movimento recebido do form 
 	from := c.FormValue("from")
 	to := c.FormValue("to")
 	log.Printf("Received move: from=%s, to=%s\n", from, to)
 
 	fromRow, fromCol, err := parsePosition(from)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Posição de origem inválida")
+		return c.Render(http.StatusOK, "base", map[string]any{
+			"board": models.CurrentGame.GetPrintableBoard(),
+			"msg": "Posição de Origem inválida!" ,
+	})
 	}
-
 	toRow, toCol, err := parsePosition(to)
+
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Posição de destino inválida")
+		return c.Render(http.StatusOK, "base", map[string]any{
+			"board": models.CurrentGame.GetPrintableBoard(),
+			"msg": "Posição de Destino inválida!" ,
+	})
 	}
 
 	// Cria canal de resposta e envia a jogada
 	moveCh := make(chan models.MoveResult)
 
-	// Aqui pode ser o ponto do erro!
 	if models.CurrentGame == nil {
-		log.Println("ERRO: CurrentGame está nil!")
 		return c.String(http.StatusInternalServerError, "Jogo não inicializado")
 	}
 
@@ -71,6 +75,7 @@ func ClientMove(c echo.Context) error {
 	return c.Render(http.StatusOK, "base", map[string]any{
 		"board": models.CurrentGame.GetPrintableBoard(),
 		"msg":   result.Message,
+		"turn":   models.CurrentGame.Turn,
 	})
 }
 
