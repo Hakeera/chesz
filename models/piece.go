@@ -7,3 +7,4 @@ type Piece struct {
     Class string
 }
 
+// TODO: Desenvolver dinâmica de classes

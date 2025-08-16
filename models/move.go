@@ -2,6 +2,9 @@ package models
 
 import "fmt"
 
+// TODO: Promoção Dama
+// TODO: Dinâmica de movimento das classes 
+
 // IsValidMove Valida o movimento de cada peça de acordo com seu tipo e cor 
 func (b *Board) IsValidMove(piece *Piece, fromRow, fromCol, toRow, toCol int) bool {
     if piece == nil {

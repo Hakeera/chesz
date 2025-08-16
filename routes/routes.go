@@ -12,4 +12,5 @@ func SetUpRoutes (e *echo.Echo) {
 	e.GET("/play", controller.StartGame)  
 	e.GET("/board", controller.GetBoard)  
 	e.POST("/move", controller.ClientMove)  
+	// TODO: /clock
 }
