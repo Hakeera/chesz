@@ -1,196 +1,206 @@
-/* Estilo do container do tabuleiro */
-pre {
-    font-family: 'Courier New', monospace;
-    font-size: 24px;
-    line-height: 1;
-    background: #f0d9b5;
-    padding: 20px;
-    border: 4px solid #8b4513;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    margin: 20px auto;
-    width: fit-content;
-    white-space: pre;
-}
+body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2d1b0e, #8b4513);
+            color: #f4e4c1;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-/* Estilização das linhas do tabuleiro */
-pre {
-    background: linear-gradient(
-        90deg,
-        transparent 0,
-        transparent 2ch,
-        #f0d9b5 2ch,
-        #f0d9b5 3ch,
-        transparent 3ch,
-        transparent 4ch,
-        #b58863 4ch,
-        #b58863 5ch,
-        #f0d9b5 5ch,
-        #f0d9b5 6ch,
-        #b58863 6ch,
-        #b58863 7ch,
-        #f0d9b5 7ch,
-        #f0d9b5 8ch,
-        #b58863 8ch,
-        #b58863 9ch,
-        #f0d9b5 9ch,
-        #f0d9b5 10ch,
-        #b58863 10ch,
-        #b58863 11ch,
-        #f0d9b5 11ch,
-        #f0d9b5 12ch,
-        #b58863 12ch,
-        #b58863 13ch,
-        #f0d9b5 13ch,
-        #f0d9b5 14ch,
-        #b58863 14ch,
-        #b58863 15ch,
-        #f0d9b5 15ch,
-        #f0d9b5 16ch,
-        #b58863 16ch,
-        #b58863 17ch,
-        #f0d9b5 17ch,
-        #f0d9b5 18ch,
-        transparent 18ch
-    );
-    background-size: 100% 1em;
-}
+        .game-container {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
 
-/* Alternância de cores nas linhas */
-pre :nth-child(even) {
-    background: linear-gradient(
-        90deg,
-        transparent 0,
-        transparent 2ch,
-        #b58863 2ch,
-        #b58863 3ch,
-        #f0d9b5 3ch,
-        #f0d9b5 4ch,
-        #b58863 4ch,
-        #b58863 5ch,
-        #f0d9b5 5ch,
-        #f0d9b5 6ch,
-        #b58863 6ch,
-        #b58863 7ch,
-        #f0d9b5 7ch,
-        #f0d9b5 8ch,
-        #b58863 8ch,
-        #b58863 9ch,
-        #f0d9b5 9ch,
-        #f0d9b5 10ch,
-        #b58863 10ch,
-        #b58863 11ch,
-        #f0d9b5 11ch,
-        #f0d9b5 12ch,
-        #b58863 12ch,
-        #b58863 13ch,
-        #f0d9b5 13ch,
-        #f0d9b5 14ch,
-        #b58863 14ch,
-        #b58863 15ch,
-        #f0d9b5 15ch,
-        #f0d9b5 16ch,
-        #b58863 16ch,
-        #b58863 17ch,
-        transparent 17ch
-    );
-}
+        .game-info {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-/* Abordagem alternativa mais simples usando pseudo-elementos */
-.chess-board {
-    position: relative;
-    font-family: 'Courier New', monospace;
-    font-size: 28px;
-    line-height: 1.2;
-    background: #f0d9b5;
-    padding: 30px;
-    border: 6px solid #8b4513;
-    border-radius: 12px;
-    box-shadow: 
-        0 0 0 2px #d2691e,
-        0 8px 16px rgba(0,0,0,0.4);
-    margin: 20px auto;
-    width: fit-content;
-    white-space: pre;
-}
+        .turn-indicator {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
 
-/* Grid para criar o padrão xadrez */
-.chess-board::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    right: 30px;
-    bottom: 30px;
-    background-image: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 1.2em,
-            rgba(181, 136, 99, 0.3) 1.2em,
-            rgba(181, 136, 99, 0.3) 2.4em
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 2ch,
-            rgba(181, 136, 99, 0.3) 2ch,
-            rgba(181, 136, 99, 0.3) 4ch
-        );
-    pointer-events: none;
-    z-index: 1;
-}
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0;
+            border: 4px solid #8b4513;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 0 auto;
+            width: 400px;
+            height: 400px;
+        }
 
-/* Estilo das peças de xadrez usando símbolos Unicode */
-.chess-board {
-    color: #2c1810;
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-    font-weight: bold;
-}
+        .square {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            user-select: none;
+        }
 
-/* Coordenadas do tabuleiro */
-.chess-board {
-    color: #654321;
-    font-weight: 600;
-}
+        .square.light {
+            background-color: #f0d9b5;
+            color: #8b4513;
+        }
 
-/* Hover effect para interatividade */
-.chess-board:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 0 0 2px #d2691e,
-        0 12px 20px rgba(0,0,0,0.5);
-    transition: all 0.2s ease;
-}
+        .square.dark {
+            background-color: #b58863;
+            color: #f4e4c1;
+        }
 
-/* Versão simplificada usando apenas background */
-.simple-chess-board {
-    font-family: 'Courier New', monospace;
-    font-size: 24px;
-    line-height: 1.1;
-    background: 
-        repeating-linear-gradient(
-            45deg,
-            #f0d9b5 0px,
-            #f0d9b5 20px,
-            #b58863 20px,
-            #b58863 40px
-        );
-    padding: 25px;
-    border: 4px solid #8b4513;
-    border-radius: 8px;
-    color: #2c1810;
-    font-weight: bold;
-    text-shadow: 1px 1px 1px rgba(255,255,255,0.3);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    margin: 20px auto;
-    width: fit-content;
-}
+        .square:hover {
+            box-shadow: inset 0 0 15px rgba(255,215,0,0.4);
+            transform: scale(1.05);
+        }
 
-/* Estilo responsivo */
-@media (max-width: 768px) {
-    pre, .chess-board, .simple-chess-board {
-        font-size: 18px;
-        padding: 15px;
-    }
-}
+        .square.selected {
+            background-color: #ffd700 !important;
+            box-shadow: 0 0 20px #ffd700;
+            animation: pulse 1s infinite;
+        }
+
+        .square.valid-move {
+            background-color: #4CAF50 !important;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        .square.last-move {
+            background-color: #2196F3 !important;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #4CAF50; }
+            to { box-shadow: 0 0 20px #4CAF50, 0 0 30px #4CAF50; }
+        }
+
+        /* Drag & Drop Styles */
+        .piece {
+            cursor: grab;
+            transition: transform 0.2s ease;
+        }
+
+        .piece:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        .piece.dragging {
+            opacity: 0.7;
+            transform: scale(1.2);
+            z-index: 1000;
+        }
+
+        .drop-zone {
+            background-color: rgba(76, 175, 80, 0.3) !important;
+            border: 2px dashed #4CAF50;
+        }
+
+        .invalid-drop {
+            background-color: rgba(244, 67, 54, 0.3) !important;
+            border: 2px dashed #f44336;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Move Input Fallback */
+        .move-input {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .move-input input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            padding: 0.5rem;
+            color: #f4e4c1;
+            text-align: center;
+            font-size: 1rem;
+            width: 60px;
+        }
+
+        .move-input button {
+            background: linear-gradient(45deg, #8b4513, #d2691e);
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .move-input button:hover {
+            transform: scale(1.05);
+        }
+
+        .coordinates {
+            text-align: center;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: #8b4513;
+            letter-spacing: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .status-message {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .status-message.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #ffcdd2;
+        }
+
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #c8e6c9;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }

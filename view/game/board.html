@@ -1,17 +1,86 @@
-{{define "content"}}
-<div>
-	<p>Turno:{{.turn}}</p>
-</div>
-<pre class="chess-board">
-  a b c d e f g h
-{{range $i, $row := .board}}
-{{sub 8 $i}} {{range $row}}{{.}} {{end}} {{sub 8 $i}}
-{{end}}
-  a b c d e f g h
-</pre>
-<div>
-	{{if .msg}}
-	<p>{{.msg}}</p>
+{{define "board-content"}}
+<div data-turn="{{.turn}}" data-msg="{{.msg}}" style="display: none;"></div>
+{{if .board}}
+	{{range $rowIdx, $row := .board}}
+		{{range $colIdx, $piece := $row}}
+			{{$pos := printf "%c%d" (add 97 $colIdx) (sub 8 $rowIdx)}}
+			{{$isDark := eq (mod (add $rowIdx $colIdx) 2) 1}}
+			<div class="square {{if $isDark}}dark{{else}}light{{end}}" data-pos="{{$pos}}">{{if ne $piece " "}}{{$piece}}{{end}}</div>
+		{{end}}
 	{{end}}
-</div>
+{{else}}
+	<!-- Tabuleiro inicial se não houver dados do backend -->
+	<div class="square dark" data-pos="a8">♜</div>
+	<div class="square light" data-pos="b8">♞</div>
+	<div class="square dark" data-pos="c8">♝</div>
+	<div class="square light" data-pos="d8">♛</div>
+	<div class="square dark" data-pos="e8">♚</div>
+	<div class="square light" data-pos="f8">♝</div>
+	<div class="square dark" data-pos="g8">♞</div>
+	<div class="square light" data-pos="h8">♜</div>
+
+	<div class="square light" data-pos="a7">♟</div>
+	<div class="square dark" data-pos="b7">♟</div>
+	<div class="square light" data-pos="c7">♟</div>
+	<div class="square dark" data-pos="d7">♟</div>
+	<div class="square light" data-pos="e7">♟</div>
+	<div class="square dark" data-pos="f7">♟</div>
+	<div class="square light" data-pos="g7">♟</div>
+	<div class="square dark" data-pos="h7">♟</div>
+
+	<!-- Casas vazias fileiras 6-3 -->
+	<div class="square dark" data-pos="a6"></div>
+	<div class="square light" data-pos="b6"></div>
+	<div class="square dark" data-pos="c6"></div>
+	<div class="square light" data-pos="d6"></div>
+	<div class="square dark" data-pos="e6"></div>
+	<div class="square light" data-pos="f6"></div>
+	<div class="square dark" data-pos="g6"></div>
+	<div class="square light" data-pos="h6"></div>
+
+	<div class="square light" data-pos="a5"></div>
+	<div class="square dark" data-pos="b5"></div>
+	<div class="square light" data-pos="c5"></div>
+	<div class="square dark" data-pos="d5"></div>
+	<div class="square light" data-pos="e5"></div>
+	<div class="square dark" data-pos="f5"></div>
+	<div class="square light" data-pos="g5"></div>
+	<div class="square dark" data-pos="h5"></div>
+
+	<div class="square dark" data-pos="a4"></div>
+	<div class="square light" data-pos="b4"></div>
+	<div class="square dark" data-pos="c4"></div>
+	<div class="square light" data-pos="d4"></div>
+	<div class="square dark" data-pos="e4"></div>
+	<div class="square light" data-pos="f4"></div>
+	<div class="square dark" data-pos="g4"></div>
+	<div class="square light" data-pos="h4"></div>
+
+	<div class="square light" data-pos="a3"></div>
+	<div class="square dark" data-pos="b3"></div>
+	<div class="square light" data-pos="c3"></div>
+	<div class="square dark" data-pos="d3"></div>
+	<div class="square light" data-pos="e3"></div>
+	<div class="square dark" data-pos="f3"></div>
+	<div class="square light" data-pos="g3"></div>
+	<div class="square dark" data-pos="h3"></div>
+
+	<div class="square dark" data-pos="a2">♙</div>
+	<div class="square light" data-pos="b2">♙</div>
+	<div class="square dark" data-pos="c2">♙</div>
+	<div class="square light" data-pos="d2">♙</div>
+	<div class="square dark" data-pos="e2">♙</div>
+	<div class="square light" data-pos="f2">♙</div>
+	<div class="square dark" data-pos="g2">♙</div>
+	<div class="square light" data-pos="h2">♙</div>
+
+	<div class="square light" data-pos="a1">♖</div>
+	<div class="square dark" data-pos="b1">♘</div>
+	<div class="square light" data-pos="c1">♗</div>
+	<div class="square dark" data-pos="d1">♕</div>
+	<div class="square light" data-pos="e1">♔</div>
+	<div class="square dark" data-pos="f1">♗</div>
+	<div class="square light" data-pos="g1">♘</div>
+	<div class="square dark" data-pos="h1">♖</div>
+{{end}}
 {{end}}

@@ -9,38 +9,293 @@
 </head>
 <body>
     <header>
-        <h1>Jogo de Xadrez</h1>
     </header>
 
     <main>
-        {{block "content" .}}{{end}}
+	    <div class="game-container">
+		    <div class="game-info">
+			    <h1>♔ Xadrez ♛</h1>
+			    <div id="turn-indicator" class="turn-indicator">
+				    {{if .turn}}
+					    Turno: {{if eq .turn "White"}}Brancas{{else}}Pretas{{end}}
+				    {{else}}
+					    Turno: Brancas
+				    {{end}}
+			    </div>
+		    </div>
 
-	<form action="/move" method="POST">
-		De: <input name="from" type="text" placeholder="ex: e2" required>
-		Para: <input name="to" type="text" placeholder="ex: e4" required>
-		<button type="submit">Mover</button>
-	</form>
+		    <!-- Mensagem de status -->
+		    <div id="game-message" class="game-message" style="display: {{if .msg}}block{{else}}none{{end}}">
+			    {{if .msg}}{{.msg}}{{end}}
+		    </div>
+		    
+		    <!-- Tabuleiro que será atualizado pelo HTMX -->
+		    <div id="chess-board" 
+			 class="chess-board"
+			 hx-get="/board" 
+			 hx-trigger="load"
+			 hx-swap="innerHTML">
+			    {{template "board-content" .}}
+		    </div>
+
+		    <!-- Formulário para HTMX -->
+		    <form id="move-form" 
+			  hx-post="/move" 
+			  hx-target="#chess-board" 
+			  hx-swap="innerHTML"
+			  hx-include="#move-from, #move-to"
+			  style="display: none;">
+			    <input type="hidden" name="from" id="move-from">
+			    <input type="hidden" name="to" id="move-to">
+		    </form>
+
+		    <!-- Fallback manual -->
+		    <div class="move-input">
+			    <input type="text" placeholder="e2" id="manual-from">
+			    <input type="text" placeholder="e4" id="manual-to">
+			    <button onclick="makeManualMove()">Jogar</button>
+		    </div>
+
+		    <div id="status-message" class="status-message" style="display: none;"></div>
+	    </div>
+
     </main>
 
     <footer>
     </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.10/htmx.min.js"></script>
 </body>
 <script>
+	// Drag & Drop Logic integrado com HTMX
+	let draggedPiece = null;
+	let draggedFrom = null;
+
+	// Inicializa drag & drop quando o tabuleiro é carregado/atualizado
+	document.addEventListener('htmx:afterSwap', function(event) {
+		if (event.target.id === 'chess-board') {
+			initializeDragAndDrop();
+		}
+	});
+
+	// Inicializa na primeira carga
 	document.addEventListener('DOMContentLoaded', function() {
-		const board = document.querySelector('.chess-board');
-		if (board) {
-			let content = board.textContent;
+		initializeDragAndDrop();
+	});
 
-			const pieces = {
-				'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙', // Brancas
-				'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'  // Pretas
-			};
+	function initializeDragAndDrop() {
+		const squares = document.querySelectorAll('.square');
 
-			for (const [letter, symbol] of Object.entries(pieces)) {
-				content = content.replaceAll(letter, symbol);
+		squares.forEach(square => {
+			const piece = square.textContent.trim();
+
+			// Se tem peça, torna arrastável
+			if (piece && piece !== '.' && piece !== '') {
+				square.draggable = true;
+				square.classList.add('piece');
+
+				square.addEventListener('dragstart', handleDragStart);
+				square.addEventListener('dragend', handleDragEnd);
+			} else {
+				square.draggable = false;
+				square.classList.remove('piece');
 			}
 
-			board.textContent = content;
+			// Todas as casas podem receber drops
+			square.addEventListener('dragover', handleDragOver);
+			square.addEventListener('dragenter', handleDragEnter);
+			square.addEventListener('dragleave', handleDragLeave);
+			square.addEventListener('drop', handleDrop);
+
+			// Click alternativo (para mobile/touch)
+			square.addEventListener('click', handleSquareClick);
+		});
+	}
+
+	function handleDragStart(e) {
+		draggedPiece = e.target.textContent.trim();
+		draggedFrom = e.target.dataset.pos;
+		e.target.classList.add('dragging');
+
+	}
+
+	function handleDragEnd(e) {
+		e.target.classList.remove('dragging');
+		clearDropZones();
+	}
+
+	function handleDragOver(e) {
+		e.preventDefault(); // Permite o drop
+	}
+
+	function handleDragEnter(e) {
+		e.preventDefault();
+		e.target.classList.add('drop-zone');
+	}
+
+	function handleDragLeave(e) {
+		e.target.classList.remove('drop-zone', 'invalid-drop');
+	}
+
+	function handleDrop(e) {
+		e.preventDefault();
+		const targetPos = e.target.dataset.pos;
+
+		if (draggedFrom && targetPos && draggedFrom !== targetPos) {
+			makeMove(draggedFrom, targetPos);
+		}
+
+		clearDropZones();
+		draggedFrom = null;
+		draggedPiece = null;
+	}
+
+	// Sistema de click (alternativo ao drag & drop)
+	let selectedSquare = null;
+
+	function handleSquareClick(e) {
+		const pos = e.target.dataset.pos;
+		const piece = e.target.textContent.trim();
+
+		if (selectedSquare) {
+			// Segunda clicada = tentativa de movimento
+			if (selectedSquare !== pos) {
+				makeMove(selectedSquare, pos);
+			}
+			clearSelection();
+		} else if (piece && piece !== '.' && piece !== '') {
+			// Primeira clicada = seleção de peça
+			selectedSquare = pos;
+			e.target.classList.add('selected');
+		}
+	}
+
+	function clearSelection() {
+		document.querySelectorAll('.square').forEach(square => {
+			square.classList.remove('selected');
+		});
+		selectedSquare = null;
+	}
+
+	function clearDropZones() {
+		document.querySelectorAll('.square').forEach(square => {
+			square.classList.remove('drop-zone', 'invalid-drop');
+		});
+	}
+
+	// Função principal que chama HTMX
+	function makeMove(from, to) {
+		// Esconde mensagem anterior
+		const gameMessage = document.getElementById('game-message');
+		if (gameMessage) {
+			gameMessage.style.display = 'none';
+		}
+
+		// Define os valores do formulário
+		document.getElementById('move-from').value = from;
+		document.getElementById('move-to').value = to;
+
+		// Mostra loading
+		document.getElementById('chess-board').classList.add('loading');
+
+		// Dispara o HTMX manualmente
+		htmx.trigger('#move-form', 'submit');
+
+		clearSelection();
+	}
+
+	// Função para movimento manual
+	function makeManualMove() {
+		const from = document.getElementById('manual-from').value;
+		const to = document.getElementById('manual-to').value;
+
+		if (from && to) {
+			makeMove(from, to);
+			// Limpa os inputs
+			document.getElementById('manual-from').value = '';
+			document.getElementById('manual-to').value = '';
+		}
+	}
+
+	// Remove loading quando HTMX terminar e atualiza game info
+	document.addEventListener('htmx:afterSwap', function(event) {
+		if (event.target.id === 'chess-board') {
+			document.getElementById('chess-board').classList.remove('loading');
+			
+			// Extrai dados dos atributos data- que vêm do backend
+			const dataElement = event.target.querySelector('[data-turn]');
+			
+			if (dataElement) {
+				const turn = dataElement.getAttribute('data-turn');
+				const msg = dataElement.getAttribute('data-msg');
+				
+				// Atualiza indicador de turno
+				const turnIndicator = document.getElementById('turn-indicator');
+				if (turnIndicator && turn) {
+					const turnText = turn === 'White' ? 'Brancas' : 'Pretas';
+					turnIndicator.textContent = `Turno: ${turnText}`;
+				}
+				
+				// Atualiza mensagem
+				const gameMessage = document.getElementById('game-message');
+				if (gameMessage) {
+					if (msg && msg.trim() !== '' && msg !== 'undefined') {
+						gameMessage.textContent = msg;
+						gameMessage.style.display = 'block';
+						gameMessage.className = msg.includes('inválid') ? 'game-message error' : 'game-message info';
+					} else {
+						gameMessage.style.display = 'none';
+					}
+				}
+			}
+			
+			// Esconde mensagem de status temporário após um tempo
+			setTimeout(() => {
+				const gameMessage = document.getElementById('game-message');
+				if (gameMessage && gameMessage.style.display !== 'none') {
+					gameMessage.style.display = 'none';
+				}
+			}, 3000);
+		}
+		
+		// Esconde status temporário após movimento
+		setTimeout(() => {
+			const statusEl = document.getElementById('status-message');
+			if (statusEl && statusEl.style.display !== 'none') {
+				statusEl.style.display = 'none';
+			}
+		}, 1500);
+	});
+
+	// Tratamento de erros HTMX
+	document.addEventListener('htmx:responseError', function(event) {
+		document.getElementById('chess-board').classList.remove('loading');
+	});
+
+	// Handler quando requisição é enviada
+	document.addEventListener('htmx:beforeRequest', function() {
+		document.getElementById('chess-board').classList.add('loading');
+	});
+	// VERSÃO CORRIGIDA - Não destroi a estrutura HTML
+	document.body.addEventListener('htmx:afterSwap', function(evt) {
+		if (evt.target.id === "chess-board") {
+			const pieces = {
+				'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙',
+				'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'
+			};
+
+
+			// MODIFICA APENAS O CONTEÚDO DOS QUADRADOS INDIVIDUAIS:
+			const squares = evt.target.querySelectorAll('.square');
+			squares.forEach(square => {
+				const text = square.textContent.trim();
+				if (pieces[text]) {
+					square.textContent = pieces[text];
+				}
+			});
+
+			// Reinicializa drag & drop após conversão
+			initializeDragAndDrop();
 		}
 	});
 </script>

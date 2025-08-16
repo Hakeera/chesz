@@ -94,10 +94,10 @@ func (g *Game) GetPrintableBoard() [][]string {
 		printable[i] = make([]string, 8)
 		for j := range printable[i] {
 			if g.Board[i][j] == nil {
-				printable[i][j] = "." // Casa vazia
+				printable[i][j] = "" // Casa vazia
 			} else {
 				piece := g.Board[i][j]
-				if piece.Color == "white" || piece.Color == "White" || piece.Color == "WHITE" {
+				if piece.Color == "White" {
 					// Peças brancas em MAIÚSCULAS
 					printable[i][j] = strings.ToUpper(piece.Type)
 				} else {
